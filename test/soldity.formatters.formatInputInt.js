@@ -1,13 +1,13 @@
 var chai = require('chai');
 var assert = chai.assert;
 var formatters = require('../lib/solidity/formatters.js');
-var SolidityParam = require('../lib/solidity/param');
+var Param = require('../lib/solidity/param');
 
 var tests = [
-    { input: 1, result: new SolidityParam('0000000000000000000000000000000000000000000000000000000000000001') },
-    { input: 1.1, result: new SolidityParam('0000000000000000000000000000000000000000000000000000000000000001') },
-    { input: -1.1, result: new SolidityParam('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff') },
-    { input: -1, result: new SolidityParam('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff') }
+    { input: 1, result: new Param('0000000000000000000000000000000000000000000000000000000000000001') },
+    { input: 1.1, result: new Param('0000000000000000000000000000000000000000000000000000000000000001') },
+    { input: -1.1, result: new Param('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff') },
+    { input: -1, result: new Param('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff') }
 ];
 
 describe('formatters', function () {
