@@ -1,7 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
-var formatters = require('../lib/solidity/formatters.js');
-var Param = require('../lib/solidity/param');
+var formatters = require('../lib/types/formatters.js');
+var Param = require('../lib/types/param');
 
 var tests = [
     { input: 1, result: new Param('0000000000000000000000000000000000000000000000000000000000000001') },
