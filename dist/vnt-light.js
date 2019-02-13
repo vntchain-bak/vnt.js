@@ -515,10 +515,10 @@ module.exports=[
 
 },{}],4:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeAddress is a prootype that represents address type
+ * TypeAddress is a prootype that represents address type
  * It matches:
  * address
  * address[]
@@ -527,26 +527,26 @@ var SolidityType = require('./type');
  * address[3][]
  * address[][6][], ...
  */
-var SolidityTypeAddress = function () {
+var TypeAddress = function () {
     this._inputFormatter = f.formatInputInt;
     this._outputFormatter = f.formatOutputAddress;
 };
 
-SolidityTypeAddress.prototype = new SolidityType({});
-SolidityTypeAddress.prototype.constructor = SolidityTypeAddress;
+TypeAddress.prototype = new Type({});
+TypeAddress.prototype.constructor = TypeAddress;
 
-SolidityTypeAddress.prototype.isType = function (name) {
+TypeAddress.prototype.isType = function (name) {
     return !!name.match(/address(\[([0-9]*)\])?/);
 };
 
-module.exports = SolidityTypeAddress;
+module.exports = TypeAddress;
 
 },{"./formatters":9,"./type":14}],5:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeBool is a prootype that represents bool type
+ * TypeBool is a prootype that represents bool type
  * It matches:
  * bool
  * bool[]
@@ -555,26 +555,26 @@ var SolidityType = require('./type');
  * bool[3][]
  * bool[][6][], ...
  */
-var SolidityTypeBool = function () {
+var TypeBool = function () {
     this._inputFormatter = f.formatInputBool;
     this._outputFormatter = f.formatOutputBool;
 };
 
-SolidityTypeBool.prototype = new SolidityType({});
-SolidityTypeBool.prototype.constructor = SolidityTypeBool;
+TypeBool.prototype = new Type({});
+TypeBool.prototype.constructor = TypeBool;
 
-SolidityTypeBool.prototype.isType = function (name) {
+TypeBool.prototype.isType = function (name) {
     return !!name.match(/^bool(\[([0-9]*)\])*$/);
 };
 
-module.exports = SolidityTypeBool;
+module.exports = TypeBool;
 
 },{"./formatters":9,"./type":14}],6:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeBytes is a prototype that represents the bytes type.
+ * TypeBytes is a prototype that represents the bytes type.
  * It matches:
  * bytes
  * bytes[]
@@ -586,19 +586,19 @@ var SolidityType = require('./type');
  * bytes8[4]
  * bytes[3][]
  */
-var SolidityTypeBytes = function () {
+var TypeBytes = function () {
     this._inputFormatter = f.formatInputBytes;
     this._outputFormatter = f.formatOutputBytes;
 };
 
-SolidityTypeBytes.prototype = new SolidityType({});
-SolidityTypeBytes.prototype.constructor = SolidityTypeBytes;
+TypeBytes.prototype = new Type({});
+TypeBytes.prototype.constructor = TypeBytes;
 
-SolidityTypeBytes.prototype.isType = function (name) {
+TypeBytes.prototype.isType = function (name) {
     return !!name.match(/^bytes([0-9]{1,})(\[([0-9]*)\])*$/);
 };
 
-module.exports = SolidityTypeBytes;
+module.exports = TypeBytes;
 
 },{"./formatters":9,"./type":14}],7:[function(require,module,exports){
 /*
@@ -625,46 +625,46 @@ module.exports = SolidityTypeBytes;
 
 var f = require('./formatters');
 
-var SolidityTypeAddress = require('./address');
-var SolidityTypeBool = require('./bool');
-var SolidityTypeInt = require('./int');
-var SolidityTypeUInt = require('./uint');
-var SolidityTypeDynamicBytes = require('./dynamicbytes');
-var SolidityTypeString = require('./string');
-var SolidityTypeReal = require('./real');
-var SolidityTypeUReal = require('./ureal');
-var SolidityTypeBytes = require('./bytes');
+var TypeAddress = require('./address');
+var TypeBool = require('./bool');
+var TypeInt = require('./int');
+var TypeUInt = require('./uint');
+var TypeDynamicBytes = require('./dynamicbytes');
+var TypeString = require('./string');
+var TypeReal = require('./real');
+var TypeUReal = require('./ureal');
+var TypeBytes = require('./bytes');
 
-var isDynamic = function (solidityType, type) {
-   return solidityType.isDynamicType(type) ||
-          solidityType.isDynamicArray(type);
+var isDynamic = function (Type, type) {
+   return Type.isDynamicType(type) ||
+          Type.isDynamicArray(type);
 };
 
 /**
- * SolidityCoder prototype should be used to encode/decode solidity params of any type
+ * Coder prototype should be used to encode/decode params of any type
  */
-var SolidityCoder = function (types) {
+var Coder = function (types) {
     this._types = types;
 };
 
 /**
- * This method should be used to transform type to SolidityType
+ * This method should be used to transform type to Type
  *
  * @method _requireType
  * @param {String} type
- * @returns {SolidityType}
+ * @returns {Type}
  * @throws {Error} throws if no matching type is found
  */
-SolidityCoder.prototype._requireType = function (type) {
-    var solidityType = this._types.filter(function (t) {
+Coder.prototype._requireType = function (type) {
+    var _type = this._types.filter(function (t) {
         return t.isType(type);
     })[0];
 
-    if (!solidityType) {
-        throw Error('invalid solidity type!: ' + type);
+    if (!_type) {
+        throw Error('invalid type!: ' + type);
     }
 
-    return solidityType;
+    return _type;
 };
 
 /**
@@ -675,7 +675,7 @@ SolidityCoder.prototype._requireType = function (type) {
  * @param {Object} plain param
  * @return {String} encoded plain param
  */
-SolidityCoder.prototype.encodeParam = function (type, param) {
+Coder.prototype.encodeParam = function (type, param) {
     return this.encodeParams([type], [param]);
 };
 
@@ -687,47 +687,47 @@ SolidityCoder.prototype.encodeParam = function (type, param) {
  * @param {Array} params
  * @return {String} encoded list of params
  */
-SolidityCoder.prototype.encodeParams = function (types, params) {
-    var solidityTypes = this.getSolidityTypes(types);
+Coder.prototype.encodeParams = function (types, params) {
+    var Types = this.getTypes(types);
 
-    var encodeds = solidityTypes.map(function (solidityType, index) {
-        return solidityType.encode(params[index], types[index]);
+    var encodeds = Types.map(function (Type, index) {
+        return Type.encode(params[index], types[index]);
     });
 
-    var dynamicOffset = solidityTypes.reduce(function (acc, solidityType, index) {
-        var staticPartLength = solidityType.staticPartLength(types[index]);
+    var dynamicOffset = Types.reduce(function (acc, Type, index) {
+        var staticPartLength = Type.staticPartLength(types[index]);
         var roundedStaticPartLength = Math.floor((staticPartLength + 31) / 32) * 32;
 
-        return acc + (isDynamic(solidityTypes[index], types[index]) ?
+        return acc + (isDynamic(Types[index], types[index]) ?
             32 :
             roundedStaticPartLength);
     }, 0);
 
-    var result = this.encodeMultiWithOffset(types, solidityTypes, encodeds, dynamicOffset);
+    var result = this.encodeMultiWithOffset(types, Types, encodeds, dynamicOffset);
 
     return result;
 };
 
-SolidityCoder.prototype.encodeMultiWithOffset = function (types, solidityTypes, encodeds, dynamicOffset) {
+Coder.prototype.encodeMultiWithOffset = function (types, Types, encodeds, dynamicOffset) {
     var result = "";
     var self = this;
 
     types.forEach(function (type, i) {
-        if (isDynamic(solidityTypes[i], types[i])) {
+        if (isDynamic(Types[i], types[i])) {
             result += f.formatInputInt(dynamicOffset).encode();
-            var e = self.encodeWithOffset(types[i], solidityTypes[i], encodeds[i], dynamicOffset);
+            var e = self.encodeWithOffset(types[i], Types[i], encodeds[i], dynamicOffset);
             dynamicOffset += e.length / 2;
         } else {
             // don't add length to dynamicOffset. it's already counted
-            result += self.encodeWithOffset(types[i], solidityTypes[i], encodeds[i], dynamicOffset);
+            result += self.encodeWithOffset(types[i], Types[i], encodeds[i], dynamicOffset);
         }
 
         // TODO: figure out nested arrays
     });
 
     types.forEach(function (type, i) {
-        if (isDynamic(solidityTypes[i], types[i])) {
-            var e = self.encodeWithOffset(types[i], solidityTypes[i], encodeds[i], dynamicOffset);
+        if (isDynamic(Types[i], types[i])) {
+            var e = self.encodeWithOffset(types[i], Types[i], encodeds[i], dynamicOffset);
             dynamicOffset += e.length / 2;
             result += e;
         }
@@ -735,21 +735,21 @@ SolidityCoder.prototype.encodeMultiWithOffset = function (types, solidityTypes, 
     return result;
 };
 
-SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded, offset) {
+Coder.prototype.encodeWithOffset = function (type, Type, encoded, offset) {
     /* jshint maxcomplexity: 17 */
     /* jshint maxdepth: 5 */
 
     var self = this;
     var encodingMode={dynamic:1,static:2,other:3};
 
-    var mode=(solidityType.isDynamicArray(type)?encodingMode.dynamic:(solidityType.isStaticArray(type)?encodingMode.static:encodingMode.other));
+    var mode=(Type.isDynamicArray(type)?encodingMode.dynamic:(Type.isStaticArray(type)?encodingMode.static:encodingMode.other));
 
     if(mode !== encodingMode.other){
-        var nestedName = solidityType.nestedName(type);
-        var nestedStaticPartLength = solidityType.staticPartLength(nestedName);
+        var nestedName = Type.nestedName(type);
+        var nestedStaticPartLength = Type.staticPartLength(nestedName);
         var result = (mode === encodingMode.dynamic ? encoded[0] : '');
 
-        if (solidityType.isDynamicArray(nestedName)) {
+        if (Type.isDynamicArray(nestedName)) {
             var previousLength = (mode === encodingMode.dynamic ? 2 : 0);
 
             for (var i = 0; i < encoded.length; i++) {
@@ -768,10 +768,10 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
         for (var c = 0; c < len; c++) {
             var additionalOffset = result / 2;
             if(mode === encodingMode.dynamic){
-                result += self.encodeWithOffset(nestedName, solidityType, encoded[c + 1], offset +  additionalOffset);
+                result += self.encodeWithOffset(nestedName, Type, encoded[c + 1], offset +  additionalOffset);
             }
             else if(mode === encodingMode.static){
-                result += self.encodeWithOffset(nestedName, solidityType, encoded[c], offset + additionalOffset);
+                result += self.encodeWithOffset(nestedName, Type, encoded[c], offset + additionalOffset);
             }
         }
 
@@ -790,7 +790,7 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
  * @param {String} bytes
  * @return {Object} plain param
  */
-SolidityCoder.prototype.decodeParam = function (type, bytes) {
+Coder.prototype.decodeParam = function (type, bytes) {
     return this.decodeParams([type], bytes)[0];
 };
 
@@ -802,18 +802,18 @@ SolidityCoder.prototype.decodeParam = function (type, bytes) {
  * @param {String} bytes
  * @return {Array} array of plain params
  */
-SolidityCoder.prototype.decodeParams = function (types, bytes) {
-    var solidityTypes = this.getSolidityTypes(types);
-    var offsets = this.getOffsets(types, solidityTypes);
+Coder.prototype.decodeParams = function (types, bytes) {
+    var Types = this.getTypes(types);
+    var offsets = this.getOffsets(types, Types);
 
-    return solidityTypes.map(function (solidityType, index) {
-        return solidityType.decode(bytes, offsets[index],  types[index], index);
+    return Types.map(function (Type, index) {
+        return Type.decode(bytes, offsets[index],  types[index], index);
     });
 };
 
-SolidityCoder.prototype.getOffsets = function (types, solidityTypes) {
-    var lengths =  solidityTypes.map(function (solidityType, index) {
-        return solidityType.staticPartLength(types[index]);
+Coder.prototype.getOffsets = function (types, Types) {
+    var lengths =  Types.map(function (Type, index) {
+        return Type.staticPartLength(types[index]);
     });
 
     for (var i = 1; i < lengths.length; i++) {
@@ -823,53 +823,53 @@ SolidityCoder.prototype.getOffsets = function (types, solidityTypes) {
 
     return lengths.map(function (length, index) {
         // remove the current length, so the length is sum of previous elements
-        var staticPartLength = solidityTypes[index].staticPartLength(types[index]);
+        var staticPartLength = Types[index].staticPartLength(types[index]);
         return length - staticPartLength;
     });
 };
 
-SolidityCoder.prototype.getSolidityTypes = function (types) {
+Coder.prototype.getTypes = function (types) {
     var self = this;
     return types.map(function (type) {
         return self._requireType(type);
     });
 };
 
-var coder = new SolidityCoder([
-    new SolidityTypeAddress(),
-    new SolidityTypeBool(),
-    new SolidityTypeInt(),
-    new SolidityTypeUInt(),
-    new SolidityTypeDynamicBytes(),
-    new SolidityTypeBytes(),
-    new SolidityTypeString(),
-    new SolidityTypeReal(),
-    new SolidityTypeUReal()
+var coder = new Coder([
+    new TypeAddress(),
+    new TypeBool(),
+    new TypeInt(),
+    new TypeUInt(),
+    new TypeDynamicBytes(),
+    new TypeBytes(),
+    new TypeString(),
+    new TypeReal(),
+    new TypeUReal()
 ]);
 
 module.exports = coder;
 
 },{"./address":4,"./bool":5,"./bytes":6,"./dynamicbytes":8,"./formatters":9,"./int":10,"./real":12,"./string":13,"./uint":15,"./ureal":16}],8:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
-var SolidityTypeDynamicBytes = function () {
+var TypeDynamicBytes = function () {
     this._inputFormatter = f.formatInputDynamicBytes;
     this._outputFormatter = f.formatOutputDynamicBytes;
 };
 
-SolidityTypeDynamicBytes.prototype = new SolidityType({});
-SolidityTypeDynamicBytes.prototype.constructor = SolidityTypeDynamicBytes;
+TypeDynamicBytes.prototype = new Type({});
+TypeDynamicBytes.prototype.constructor = TypeDynamicBytes;
 
-SolidityTypeDynamicBytes.prototype.isType = function (name) {
+TypeDynamicBytes.prototype.isType = function (name) {
     return !!name.match(/^bytes(\[([0-9]*)\])*$/);
 };
 
-SolidityTypeDynamicBytes.prototype.isDynamicType = function () {
+TypeDynamicBytes.prototype.isDynamicType = function () {
     return true;
 };
 
-module.exports = SolidityTypeDynamicBytes;
+module.exports = TypeDynamicBytes;
 
 },{"./formatters":9,"./type":14}],9:[function(require,module,exports){
 /*
@@ -897,7 +897,7 @@ module.exports = SolidityTypeDynamicBytes;
 var BigNumber = require('bignumber.js');
 var utils = require('../utils/utils');
 var c = require('../utils/config');
-var SolidityParam = require('./param');
+var Param = require('./param');
 
 
 /**
@@ -907,12 +907,12 @@ var SolidityParam = require('./param');
  *
  * @method formatInputInt
  * @param {String|Number|BigNumber} value that needs to be formatted
- * @returns {SolidityParam}
+ * @returns {Param}
  */
 var formatInputInt = function (value) {
     BigNumber.config(c.VNT_BIGNUMBER_ROUNDING_MODE);
     var result = utils.padLeft(utils.toTwosComplement(value).toString(16), 64);
-    return new SolidityParam(result);
+    return new Param(result);
 };
 
 /**
@@ -920,13 +920,13 @@ var formatInputInt = function (value) {
  *
  * @method formatInputBytes
  * @param {String}
- * @returns {SolidityParam}
+ * @returns {Param}
  */
 var formatInputBytes = function (value) {
     var result = utils.toHex(value).substr(2);
     var l = Math.floor((result.length + 63) / 64);
     result = utils.padRight(result, l * 64);
-    return new SolidityParam(result);
+    return new Param(result);
 };
 
 /**
@@ -934,14 +934,14 @@ var formatInputBytes = function (value) {
  *
  * @method formatDynamicInputBytes
  * @param {String}
- * @returns {SolidityParam}
+ * @returns {Param}
  */
 var formatInputDynamicBytes = function (value) {
     var result = utils.toHex(value).substr(2);
     var length = result.length / 2;
     var l = Math.floor((result.length + 63) / 64);
     result = utils.padRight(result, l * 64);
-    return new SolidityParam(formatInputInt(length).value + result);
+    return new Param(formatInputInt(length).value + result);
 };
 
 /**
@@ -949,14 +949,14 @@ var formatInputDynamicBytes = function (value) {
  *
  * @method formatInputString
  * @param {String}
- * @returns {SolidityParam}
+ * @returns {Param}
  */
 var formatInputString = function (value) {
     var result = utils.fromUtf8(value).substr(2);
     var length = result.length / 2;
     var l = Math.floor((result.length + 63) / 64);
     result = utils.padRight(result, l * 64);
-    return new SolidityParam(formatInputInt(length).value + result);
+    return new Param(formatInputInt(length).value + result);
 };
 
 /**
@@ -964,11 +964,11 @@ var formatInputString = function (value) {
  *
  * @method formatInputBool
  * @param {Boolean}
- * @returns {SolidityParam}
+ * @returns {Param}
  */
 var formatInputBool = function (value) {
     var result = '000000000000000000000000000000000000000000000000000000000000000' + (value ?  '1' : '0');
-    return new SolidityParam(result);
+    return new Param(result);
 };
 
 /**
@@ -977,7 +977,7 @@ var formatInputBool = function (value) {
  *
  * @method formatInputReal
  * @param {String|Number|BigNumber}
- * @returns {SolidityParam}
+ * @returns {Param}
  */
 var formatInputReal = function (value) {
     return formatInputInt(new BigNumber(value).times(new BigNumber(2).pow(128)));
@@ -998,7 +998,7 @@ var signedIsNegative = function (value) {
  * Formats right-aligned output bytes to int
  *
  * @method formatOutputInt
- * @param {SolidityParam} param
+ * @param {Param} param
  * @returns {BigNumber} right-aligned output bytes formatted to big number
  */
 var formatOutputInt = function (param) {
@@ -1016,7 +1016,7 @@ var formatOutputInt = function (param) {
  * Formats right-aligned output bytes to uint
  *
  * @method formatOutputUInt
- * @param {SolidityParam}
+ * @param {Param}
  * @returns {BigNumeber} right-aligned output bytes formatted to uint
  */
 var formatOutputUInt = function (param) {
@@ -1028,7 +1028,7 @@ var formatOutputUInt = function (param) {
  * Formats right-aligned output bytes to real
  *
  * @method formatOutputReal
- * @param {SolidityParam}
+ * @param {Param}
  * @returns {BigNumber} input bytes formatted to real
  */
 var formatOutputReal = function (param) {
@@ -1039,7 +1039,7 @@ var formatOutputReal = function (param) {
  * Formats right-aligned output bytes to ureal
  *
  * @method formatOutputUReal
- * @param {SolidityParam}
+ * @param {Param}
  * @returns {BigNumber} input bytes formatted to ureal
  */
 var formatOutputUReal = function (param) {
@@ -1050,7 +1050,7 @@ var formatOutputUReal = function (param) {
  * Should be used to format output bool
  *
  * @method formatOutputBool
- * @param {SolidityParam}
+ * @param {Param}
  * @returns {Boolean} right-aligned input bytes formatted to bool
  */
 var formatOutputBool = function (param) {
@@ -1061,7 +1061,7 @@ var formatOutputBool = function (param) {
  * Should be used to format output bytes
  *
  * @method formatOutputBytes
- * @param {SolidityParam} left-aligned hex representation of string
+ * @param {Param} left-aligned hex representation of string
  * @param {String} name type name
  * @returns {String} hex string
  */
@@ -1075,7 +1075,7 @@ var formatOutputBytes = function (param, name) {
  * Should be used to format output bytes
  *
  * @method formatOutputDynamicBytes
- * @param {SolidityParam} left-aligned hex representation of string
+ * @param {Param} left-aligned hex representation of string
  * @returns {String} hex string
  */
 var formatOutputDynamicBytes = function (param) {
@@ -1087,7 +1087,7 @@ var formatOutputDynamicBytes = function (param) {
  * Should be used to format output string
  *
  * @method formatOutputString
- * @param {SolidityParam} left-aligned hex representation of string
+ * @param {Param} left-aligned hex representation of string
  * @returns {String} ascii string
  */
 var formatOutputString = function (param) {
@@ -1099,7 +1099,7 @@ var formatOutputString = function (param) {
  * Should be used to format output address
  *
  * @method formatOutputAddress
- * @param {SolidityParam} right-aligned input bytes
+ * @param {Param} right-aligned input bytes
  * @returns {String} address
  */
 var formatOutputAddress = function (param) {
@@ -1127,10 +1127,10 @@ module.exports = {
 
 },{"../utils/config":18,"../utils/utils":21,"./param":11,"bignumber.js":"bignumber.js"}],10:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeInt is a prootype that represents int type
+ * TypeInt is a prootype that represents int type
  * It matches:
  * int
  * int[]
@@ -1145,19 +1145,19 @@ var SolidityType = require('./type');
  * int[3][]
  * int64[][6][], ...
  */
-var SolidityTypeInt = function () {
+var TypeInt = function () {
     this._inputFormatter = f.formatInputInt;
     this._outputFormatter = f.formatOutputInt;
 };
 
-SolidityTypeInt.prototype = new SolidityType({});
-SolidityTypeInt.prototype.constructor = SolidityTypeInt;
+TypeInt.prototype = new Type({});
+TypeInt.prototype.constructor = TypeInt;
 
-SolidityTypeInt.prototype.isType = function (name) {
+TypeInt.prototype.isType = function (name) {
     return !!name.match(/^int([0-9]*)?(\[([0-9]*)\])*$/);
 };
 
-module.exports = SolidityTypeInt;
+module.exports = TypeInt;
 
 },{"./formatters":9,"./type":14}],11:[function(require,module,exports){
 /*
@@ -1176,7 +1176,7 @@ module.exports = SolidityTypeInt;
     You should have received a copy of the GNU Lesser General Public License
     along with vnt.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file param.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
@@ -1185,45 +1185,45 @@ module.exports = SolidityTypeInt;
 var utils = require('../utils/utils');
 
 /**
- * SolidityParam object prototype.
- * Should be used when encoding, decoding solidity bytes
+ * Param object prototype.
+ * Should be used when encoding, decoding bytes
  */
-var SolidityParam = function (value, offset) {
+var Param = function (value, offset) {
     this.value = value || '';
     this.offset = offset; // offset in bytes
 };
 
 /**
  * This method should be used to get length of params's dynamic part
- * 
+ *
  * @method dynamicPartLength
  * @returns {Number} length of dynamic part (in bytes)
  */
-SolidityParam.prototype.dynamicPartLength = function () {
+Param.prototype.dynamicPartLength = function () {
     return this.dynamicPart().length / 2;
 };
 
 /**
- * This method should be used to create copy of solidity param with different offset
+ * This method should be used to create copy of param with different offset
  *
  * @method withOffset
  * @param {Number} offset length in bytes
- * @returns {SolidityParam} new solidity param with applied offset
+ * @returns {Param} new param with applied offset
  */
-SolidityParam.prototype.withOffset = function (offset) {
-    return new SolidityParam(this.value, offset);
+Param.prototype.withOffset = function (offset) {
+    return new Param(this.value, offset);
 };
 
 /**
- * This method should be used to combine solidity params together
+ * This method should be used to combine params together
  * eg. when appending an array
  *
  * @method combine
- * @param {SolidityParam} param with which we should combine
- * @param {SolidityParam} result of combination
+ * @param {Param} param with which we should combine
+ * @param {Param} result of combination
  */
-SolidityParam.prototype.combine = function (param) {
-    return new SolidityParam(this.value + param.value); 
+Param.prototype.combine = function (param) {
+    return new Param(this.value + param.value);
 };
 
 /**
@@ -1233,7 +1233,7 @@ SolidityParam.prototype.combine = function (param) {
  * @method isDynamic
  * @returns {Boolean}
  */
-SolidityParam.prototype.isDynamic = function () {
+Param.prototype.isDynamic = function () {
     return this.offset !== undefined;
 };
 
@@ -1243,7 +1243,7 @@ SolidityParam.prototype.isDynamic = function () {
  * @method offsetAsBytes
  * @returns {String} bytes representation of offset
  */
-SolidityParam.prototype.offsetAsBytes = function () {
+Param.prototype.offsetAsBytes = function () {
     return !this.isDynamic() ? '' : utils.padLeft(utils.toTwosComplement(this.offset).toString(16), 64);
 };
 
@@ -1253,10 +1253,10 @@ SolidityParam.prototype.offsetAsBytes = function () {
  * @method staticPart
  * @returns {String} offset if it is a dynamic param, otherwise value
  */
-SolidityParam.prototype.staticPart = function () {
+Param.prototype.staticPart = function () {
     if (!this.isDynamic()) {
-        return this.value; 
-    } 
+        return this.value;
+    }
     return this.offsetAsBytes();
 };
 
@@ -1266,7 +1266,7 @@ SolidityParam.prototype.staticPart = function () {
  * @method dynamicPart
  * @returns {String} returns a value if it is a dynamic param, otherwise empty string
  */
-SolidityParam.prototype.dynamicPart = function () {
+Param.prototype.dynamicPart = function () {
     return this.isDynamic() ? this.value : '';
 };
 
@@ -1276,7 +1276,7 @@ SolidityParam.prototype.dynamicPart = function () {
  * @method encode
  * @returns {String}
  */
-SolidityParam.prototype.encode = function () {
+Param.prototype.encode = function () {
     return this.staticPart() + this.dynamicPart();
 };
 
@@ -1284,11 +1284,11 @@ SolidityParam.prototype.encode = function () {
  * This method should be called to encode array of params
  *
  * @method encodeList
- * @param {Array[SolidityParam]} params
+ * @param {Array[Param]} params
  * @returns {String}
  */
-SolidityParam.encodeList = function (params) {
-    
+Param.encodeList = function (params) {
+
     // updating offsets
     var totalOffset = params.length * 32;
     var offsetParams = params.map(function (param) {
@@ -1310,15 +1310,14 @@ SolidityParam.encodeList = function (params) {
 
 
 
-module.exports = SolidityParam;
-
+module.exports = Param;
 
 },{"../utils/utils":21}],12:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeReal is a prootype that represents real type
+ * TypeReal is a prootype that represents real type
  * It matches:
  * real
  * real[]
@@ -1333,62 +1332,62 @@ var SolidityType = require('./type');
  * real[3][]
  * real64[][6][], ...
  */
-var SolidityTypeReal = function () {
+var TypeReal = function () {
     this._inputFormatter = f.formatInputReal;
     this._outputFormatter = f.formatOutputReal;
 };
 
-SolidityTypeReal.prototype = new SolidityType({});
-SolidityTypeReal.prototype.constructor = SolidityTypeReal;
+TypeReal.prototype = new Type({});
+TypeReal.prototype.constructor = TypeReal;
 
-SolidityTypeReal.prototype.isType = function (name) {
+TypeReal.prototype.isType = function (name) {
     return !!name.match(/real([0-9]*)?(\[([0-9]*)\])?/);
 };
 
-module.exports = SolidityTypeReal;
+module.exports = TypeReal;
 
 },{"./formatters":9,"./type":14}],13:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
-var SolidityTypeString = function () {
+var TypeString = function () {
     this._inputFormatter = f.formatInputString;
     this._outputFormatter = f.formatOutputString;
 };
 
-SolidityTypeString.prototype = new SolidityType({});
-SolidityTypeString.prototype.constructor = SolidityTypeString;
+TypeString.prototype = new Type({});
+TypeString.prototype.constructor = TypeString;
 
-SolidityTypeString.prototype.isType = function (name) {
+TypeString.prototype.isType = function (name) {
     return !!name.match(/^string(\[([0-9]*)\])*$/);
 };
 
-SolidityTypeString.prototype.isDynamicType = function () {
+TypeString.prototype.isDynamicType = function () {
     return true;
 };
 
-module.exports = SolidityTypeString;
+module.exports = TypeString;
 
 },{"./formatters":9,"./type":14}],14:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityParam = require('./param');
+var Param = require('./param');
 
 /**
- * SolidityType prototype is used to encode/decode solidity params of certain type
+ * Type prototype is used to encode/decode params of certain type
  */
-var SolidityType = function (config) {
+var Type = function (config) {
     this._inputFormatter = config.inputFormatter;
     this._outputFormatter = config.outputFormatter;
 };
 
 /**
- * Should be used to determine if this SolidityType do match given name
+ * Should be used to determine if this Type do match given name
  *
  * @method isType
  * @param {String} name
- * @return {Bool} true if type match this SolidityType, otherwise false
+ * @return {Bool} true if type match this Type, otherwise false
  */
-SolidityType.prototype.isType = function (name) {
+Type.prototype.isType = function (name) {
     throw "this method should be overrwritten for type " + name;
 };
 
@@ -1399,7 +1398,7 @@ SolidityType.prototype.isType = function (name) {
  * @param {String} name
  * @return {Number} length of static part in bytes
  */
-SolidityType.prototype.staticPartLength = function (name) {
+Type.prototype.staticPartLength = function (name) {
     // If name isn't an array then treat it like a single element array.
     return (this.nestedTypes(name) || ['[1]'])
         .map(function (type) {
@@ -1422,7 +1421,7 @@ SolidityType.prototype.staticPartLength = function (name) {
  * @param {String} name
  * @return {Bool} true if the type is dynamic array
  */
-SolidityType.prototype.isDynamicArray = function (name) {
+Type.prototype.isDynamicArray = function (name) {
     var nestedTypes = this.nestedTypes(name);
     return !!nestedTypes && !nestedTypes[nestedTypes.length - 1].match(/[0-9]{1,}/g);
 };
@@ -1437,7 +1436,7 @@ SolidityType.prototype.isDynamicArray = function (name) {
  * @param {String} name
  * @return {Bool} true if the type is static array
  */
-SolidityType.prototype.isStaticArray = function (name) {
+Type.prototype.isStaticArray = function (name) {
     var nestedTypes = this.nestedTypes(name);
     return !!nestedTypes && !!nestedTypes[nestedTypes.length - 1].match(/[0-9]{1,}/g);
 };
@@ -1456,7 +1455,7 @@ SolidityType.prototype.isStaticArray = function (name) {
  * @param {String} name
  * @return {Number} static array length
  */
-SolidityType.prototype.staticArrayLength = function (name) {
+Type.prototype.staticArrayLength = function (name) {
     var nestedTypes = this.nestedTypes(name);
     if (nestedTypes) {
        return parseInt(nestedTypes[nestedTypes.length - 1].match(/[0-9]{1,}/g) || 1);
@@ -1477,7 +1476,7 @@ SolidityType.prototype.staticArrayLength = function (name) {
  * @param {String} name
  * @return {String} nested name
  */
-SolidityType.prototype.nestedName = function (name) {
+Type.prototype.nestedName = function (name) {
     // remove last [] in name
     var nestedTypes = this.nestedTypes(name);
     if (!nestedTypes) {
@@ -1495,7 +1494,7 @@ SolidityType.prototype.nestedName = function (name) {
  * @param {String} name
  * @return {Bool} true if is dynamic, otherwise false
  */
-SolidityType.prototype.isDynamicType = function () {
+Type.prototype.isDynamicType = function () {
     return false;
 };
 
@@ -1510,7 +1509,7 @@ SolidityType.prototype.isDynamicType = function () {
  * @param {String} name
  * @return {Array} array of nested types
  */
-SolidityType.prototype.nestedTypes = function (name) {
+Type.prototype.nestedTypes = function (name) {
     // return list of strings eg. "[]", "[3]", "[]", "[2]"
     return name.match(/(\[[0-9]*\])/g);
 };
@@ -1523,7 +1522,7 @@ SolidityType.prototype.nestedTypes = function (name) {
  * @param {String} name
  * @return {String} encoded value
  */
-SolidityType.prototype.encode = function (value, name) {
+Type.prototype.encode = function (value, name) {
     var self = this;
     if (this.isDynamicArray(name)) {
 
@@ -1569,7 +1568,7 @@ SolidityType.prototype.encode = function (value, name) {
  * @param {String} name type name
  * @returns {Object} decoded value
  */
-SolidityType.prototype.decode = function (bytes, offset, name) {
+Type.prototype.decode = function (bytes, offset, name) {
     var self = this;
 
     if (this.isDynamicArray(name)) {
@@ -1614,24 +1613,24 @@ SolidityType.prototype.decode = function (bytes, offset, name) {
             var dynamicOffset = parseInt('0x' + bytes.substr(offset * 2, 64));      // in bytes
             var length = parseInt('0x' + bytes.substr(dynamicOffset * 2, 64));      // in bytes
             var roundedLength = Math.floor((length + 31) / 32);                     // in int
-            var param = new SolidityParam(bytes.substr(dynamicOffset * 2, ( 1 + roundedLength) * 64), 0);
+            var param = new Param(bytes.substr(dynamicOffset * 2, ( 1 + roundedLength) * 64), 0);
             return self._outputFormatter(param, name);
         })();
     }
 
     var length = this.staticPartLength(name);
-    var param = new SolidityParam(bytes.substr(offset * 2, length * 2));
+    var param = new Param(bytes.substr(offset * 2, length * 2));
     return this._outputFormatter(param, name);
 };
 
-module.exports = SolidityType;
+module.exports = Type;
 
 },{"./formatters":9,"./param":11}],15:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeUInt is a prootype that represents uint type
+ * TypeUInt is a prootype that represents uint type
  * It matches:
  * uint
  * uint[]
@@ -1646,26 +1645,26 @@ var SolidityType = require('./type');
  * uint[3][]
  * uint64[][6][], ...
  */
-var SolidityTypeUInt = function () {
+var TypeUInt = function () {
     this._inputFormatter = f.formatInputInt;
     this._outputFormatter = f.formatOutputUInt;
 };
 
-SolidityTypeUInt.prototype = new SolidityType({});
-SolidityTypeUInt.prototype.constructor = SolidityTypeUInt;
+TypeUInt.prototype = new Type({});
+TypeUInt.prototype.constructor = TypeUInt;
 
-SolidityTypeUInt.prototype.isType = function (name) {
+TypeUInt.prototype.isType = function (name) {
     return !!name.match(/^uint([0-9]*)?(\[([0-9]*)\])*$/);
 };
 
-module.exports = SolidityTypeUInt;
+module.exports = TypeUInt;
 
 },{"./formatters":9,"./type":14}],16:[function(require,module,exports){
 var f = require('./formatters');
-var SolidityType = require('./type');
+var Type = require('./type');
 
 /**
- * SolidityTypeUReal is a prootype that represents ureal type
+ * TypeUReal is a prootype that represents ureal type
  * It matches:
  * ureal
  * ureal[]
@@ -1680,19 +1679,19 @@ var SolidityType = require('./type');
  * ureal[3][]
  * ureal64[][6][], ...
  */
-var SolidityTypeUReal = function () {
+var TypeUReal = function () {
     this._inputFormatter = f.formatInputReal;
     this._outputFormatter = f.formatOutputUReal;
 };
 
-SolidityTypeUReal.prototype = new SolidityType({});
-SolidityTypeUReal.prototype.constructor = SolidityTypeUReal;
+TypeUReal.prototype = new Type({});
+TypeUReal.prototype.constructor = TypeUReal;
 
-SolidityTypeUReal.prototype.isType = function (name) {
+TypeUReal.prototype.isType = function (name) {
     return !!name.match(/^ureal([0-9]*)?(\[([0-9]*)\])*$/);
 };
 
-module.exports = SolidityTypeUReal;
+module.exports = TypeUReal;
 
 },{"./formatters":9,"./type":14}],17:[function(require,module,exports){
 'use strict';
@@ -2950,7 +2949,7 @@ module.exports = Vnt;
  */
 
 var sha3 = require('../utils/sha3');
-var SolidityEvent = require('./event');
+var Event = require('./event');
 var formatters = require('./formatters');
 var utils = require('../utils/utils');
 var Filter = require('./filter');
@@ -2990,7 +2989,7 @@ AllEvents.prototype.decode = function (data) {
         return formatters.outputLogFormatter(data);
     }
 
-    var event = new SolidityEvent(this._requestManager, match, this._address);
+    var event = new Event(this._requestManager, match, this._address);
     return event.decode(data);
 };
 
@@ -3107,7 +3106,7 @@ module.exports = Batch;
 
 var fs = require('fs')
 var utils = require('../utils/utils');
-var coder = require('../solidity/coder');
+var coder = require('../types/coder');
 var Event = require('./event');
 var Func = require('./function');
 var AllEvents = require('./allevents');
@@ -3511,7 +3510,7 @@ var Contract = function (core, abi, address) {
 
 module.exports = ContractFactory;
 
-},{"../solidity/coder":7,"../utils/sha3":20,"../utils/utils":21,"./allevents":24,"./event":28,"./function":32,"fs":96}],27:[function(require,module,exports){
+},{"../types/coder":7,"../utils/sha3":20,"../utils/utils":21,"./allevents":24,"./event":28,"./function":32,"fs":96}],27:[function(require,module,exports){
 /*
     This file is part of vnt.js.
 
@@ -3528,15 +3527,15 @@ module.exports = ContractFactory;
     You should have received a copy of the GNU Lesser General Public License
     along with vnt.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file errors.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
 module.exports = {
-    InvalidNumberOfSolidityArgs: function () {
-        return new Error('Invalid number of arguments to Solidity function');
+    InvalidNumberOfArgs: function () {
+        return new Error('Invalid number of arguments to function');
     },
     InvalidNumberOfRPCParams: function () {
         return new Error('Invalid number of input parameters to RPC method');
@@ -3580,7 +3579,7 @@ module.exports = {
  */
 
 var utils = require('../utils/utils');
-var coder = require('../solidity/coder');
+var coder = require('../types/coder');
 var formatters = require('./formatters');
 var sha3 = require('../utils/sha3');
 var Filter = require('./filter');
@@ -3766,7 +3765,7 @@ Event.prototype.attachToContract = function (contract) {
 
 module.exports = Event;
 
-},{"../solidity/coder":7,"../utils/sha3":20,"../utils/utils":21,"./filter":30,"./formatters":31,"./methods/watches":44}],29:[function(require,module,exports){
+},{"../types/coder":7,"../utils/sha3":20,"../utils/utils":21,"./filter":30,"./formatters":31,"./methods/watches":44}],29:[function(require,module,exports){
 var formatters = require('./formatters');
 var utils = require('./../utils/utils');
 var Method = require('./method');
@@ -4396,14 +4395,14 @@ module.exports = {
  * @date 2015
  */
 
-var coder = require('../solidity/coder');
+var coder = require('../types/coder');
 var utils = require('../utils/utils');
 var errors = require('./errors');
 var formatters = require('./formatters');
 var sha3 = require('../utils/sha3');
 
 /**
- * This prototype should be used to call/sendTransaction to solidity functions
+ * This prototype should be used to call/sendTransaction to functions
  */
 var Func = function (vnt, json, address) {
     this._vnt = vnt;
@@ -4447,7 +4446,7 @@ Func.prototype.validateArgs = function (args) {
               );
     });
     if (inputArgs.length !== this._inputTypes.length) {
-        throw errors.InvalidNumberOfSolidityArgs();
+        throw errors.InvalidNumberOfArgs();
     }
 };
 
@@ -4455,7 +4454,7 @@ Func.prototype.validateArgs = function (args) {
  * Should be used to create payload from arguments
  *
  * @method toPayload
- * @param {Array} solidity function params
+ * @param {Array} function params
  * @param {Object} optional payload options
  */
 Func.prototype.toPayload = function (args) {
@@ -4529,7 +4528,7 @@ Func.prototype.call = function () {
 };
 
 /**
- * Should be used to sendTransaction to solidity function
+ * Should be used to sendTransaction to function
  *
  * @method sendTransaction
  */
@@ -4550,7 +4549,7 @@ Func.prototype.sendTransaction = function () {
 };
 
 /**
- * Should be used to estimateGas of solidity function
+ * Should be used to estimateGas of function
  *
  * @method estimateGas
  */
@@ -4600,7 +4599,7 @@ Func.prototype.typeName = function () {
 };
 
 /**
- * Should be called to get rpc requests from solidity function
+ * Should be called to get rpc requests from function
  *
  * @method request
  * @returns {Object}
@@ -4658,7 +4657,7 @@ Func.prototype.attachToContract = function (contract) {
 
 module.exports = Func;
 
-},{"../solidity/coder":7,"../utils/sha3":20,"../utils/utils":21,"./errors":27,"./formatters":31}],33:[function(require,module,exports){
+},{"../types/coder":7,"../utils/sha3":20,"../utils/utils":21,"./errors":27,"./formatters":31}],33:[function(require,module,exports){
 /*
     This file is part of vnt.js.
 
@@ -28248,30 +28247,36 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":66,"minimalistic-assert":188,"minimalistic-crypto-utils":189}],166:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.0.0",
+  "_args": [
+    [
+      "elliptic@6.4.1",
+      "/Users/yanfengxi/go/src/github.com/vntchain/vnt.js"
+    ]
+  ],
+  "_development": true,
+  "_from": "elliptic@6.4.1",
   "_id": "elliptic@6.4.1",
   "_inBundle": false,
   "_integrity": "sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.0.0",
+    "raw": "elliptic@6.4.1",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.0.0",
+    "rawSpec": "6.4.1",
     "saveSpec": null,
-    "fetchSpec": "^6.0.0"
+    "fetchSpec": "6.4.1"
   },
   "_requiredBy": [
     "/browserify-sign",
     "/create-ecdh"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
-  "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
-  "_spec": "elliptic@^6.0.0",
-  "_where": "/Users/yanfengxi/go/src/github.com/vntchain/web3.js/node_modules/browserify-sign",
+  "_spec": "6.4.1",
+  "_where": "/Users/yanfengxi/go/src/github.com/vntchain/vnt.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -28279,7 +28284,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -28289,7 +28293,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -31039,10 +31042,11 @@ module.exports = X509Certificate
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)[\n\r]+([0-9A-z\n\r\+\/\=]+)[\n\r]+/m
 var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----/m
-var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----([0-9A-z\n\r\+\/\=]+)-----END \1-----$/m
+var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----([0-9A-z\n\r\+\/\=]+)-----END -----$/m
 var evp = require('evp_bytestokey')
 var ciphers = require('browserify-aes')
 module.exports = function (okey, password) {
+  console.log("######## in fixProc: okey", okey)
   var key = okey.toString()
   var match = key.match(findProc)
   var decrypted
