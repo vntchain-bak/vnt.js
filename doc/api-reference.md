@@ -227,8 +227,8 @@ var balance = new BigNumber('13124.234435346456466666457455567456');
     * [contract.packContructorData()](#contract-packcontructordata)
     * [contract.packFunctionData()](#contract-packfunctiondata)
     * [contract.unPackOutput()](#contract-unpackoutput)
-    * [account.decrypt](#account-decrypt)
-    * [account.encrypt](#account-encrypt)
+    <!-- * [account.decrypt](#account-decrypt)
+    * [account.encrypt](#account-encrypt) -->
     * [namereg](#vntcorenamereg)
     * [sendIBANTransaction](#vntcoresendibantransaction)
     * [iban](#vntcoreiban)
@@ -1851,7 +1851,7 @@ var result = vnt.core.call(options)
 console.log(contract.unPackOutput("GetAmount", result).toString())
 ```
 
-
+<!--
 #### Account decrypt
 ```js
 // decrypt a keystore content with a password, into an account object
@@ -1904,7 +1904,7 @@ vnt.account.encrypt(privateKey, "somepassword", {})
 ```js
 var privateKey = "privatekeytext";
 vnt.account.encrypt(privateKey, "somepassword", {})
-```
+``` -->
 
 ***
 
