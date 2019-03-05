@@ -35,7 +35,7 @@
       - [vnt.core.syncing](#vntcoresyncing)
       - [vnt.core.isSyncing](#vntcoreissyncing)
       - [vnt.core.coinbase](#vntcorecoinbase)
-      - [vnt.core.mining](#vntcoremining)
+      - [vnt.core.producing](#vntcoreproducing)
       - [vnt.core.gasPrice](#vntcoregasprice)
       - [vnt.core.accounts](#vntcoreaccounts)
       - [vnt.core.blockNumber](#vntcoreblocknumber)
@@ -199,7 +199,7 @@ var balance = new BigNumber('13124.234435346456466666457455567456');
     * [hashrate/getHashrate](#vntcorehashrate)
     * [gasPrice/getGasPrice](#vntcoregasprice)
     * [accounts/getAccounts](#vntcoreaccounts)
-    * [mining/getMining](#vntcoremining)
+    * [producing/getProducing](#vntcoreproducing)
     * [blockNumber/getBlockNumber](#vntcoreblocknumber)
     * [getBalance(address)](#vntcoregetbalance)
     * [getStorageAt(address, position)](#vntcoregetstorageat)
@@ -867,7 +867,7 @@ vnt.core.isSyncing(function(error, sync){
     vnt.core.coinbase
    // or async
    vnt.core.getCoinbase(callback(error, result){ ... })
-This property is read only and returns the coinbase address where the mining rewards go to.
+This property is read only and returns the coinbase address where the block rewards go to.
 
 ##### Returns
 `String` - The coinbase address of the client.
@@ -881,19 +881,19 @@ console.log(coinbase); // "0x407d73d8a49eeb85d32cf465507dd71d507100c1"
 
 ***
 
-#### vnt.core.mining
-    vnt.core.mining
+#### vnt.core.producing
+    vnt.core.produxing
    // or async
-   vnt.core.getMining(callback(error, result){ ... })
-This property is read only and says whether the node is mining or not.
+   vnt.core.getProducing(callback(error, result){ ... })
+This property is read only and says whether the node is producing blocks or not.
 
 ##### Returns
-`Boolean` - `true` if the client is mining, otherwise `false`.
+`Boolean` - `true` if the client is produsing, otherwise `false`.
 
 ##### Example
 ```js
-var mining = vnt.core.mining;
-console.log(mining); // true or false
+var producing = vnt.core.producing;
+console.log(producing); // true or false
 ```
 
 ***
@@ -1374,8 +1374,8 @@ vnt.core.filter(options, function(error, result){
 
 ##### Parameters
 1. `String|Object` - The string `"latest"` or `"pending"` to watch for changes in the latest block or pending transactions respectively. Or a filter options object as follows:
- * `fromBlock`: `Number|String` - The number of the earliest block (`latest` may be given to mean the most recent and `pending` currently mining, block). By default `latest`.
- * `toBlock`: `Number|String` - The number of the latest block (`latest` may be given to mean the most recent and `pending` currently mining, block). By default `latest`.
+ * `fromBlock`: `Number|String` - The number of the earliest block (`latest` may be given to mean the most recent and `pending` currently producing, block). By default `latest`.
+ * `toBlock`: `Number|String` - The number of the latest block (`latest` may be given to mean the most recent and `pending` currently producing, block). By default `latest`.
  * `address`: `String` - An address ~or a list of addresses~ to only get logs from particular account(s).
  * `topics`: `Array of Strings` - An array of values which must each appear in the log entries. The order is important, if you want to leave topics out use `null`, e.g. `[null, '0x00...']`. You can also pass another array for each topic with options for that topic e.g. `[null, ['option1', 'option2']]`
 
@@ -1965,7 +1965,7 @@ vnt.shh.post(message);
 
 #### vnt.core.sendIBANTransaction
 ```js
-var txHash = vnt.core.sendIBANTransaction('0x00c5496aee77c1ba1f0854206a26dda82a81d6d8', 'XE81ETHXREGGAVOFYORK', 0x100);
+var txHash = vnt.core.sendIBANTransaction('0x00c5496aee77c1ba1f0854206a26dda82a81d6d8', 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS', 0x100);
 ```
 Sends IBAN transaction from user account to destination IBAN address.
 
