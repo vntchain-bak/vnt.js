@@ -1,7 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var BigNumber = require('bignumber.js');
-var SolidityEvent = require('../lib/vnt/event');
+var Event = require('../lib/vnt/event');
 var Vnt = require('../index');
 
 
@@ -89,11 +89,11 @@ var tests = [{
         address: address,
         blockHash: '0x1234567890',
         blockNumber: '0x1',
-        data: '0x' + 
-            '0000000000000000000000000000000000000000000000000000000000000001' + 
+        data: '0x' +
+            '0000000000000000000000000000000000000000000000000000000000000001' +
             '0000000000000000000000000000000000000000000000000000000000000004',
         topics: [
-            address, 
+            address,
             '0x000000000000000000000000000000000000000000000000000000000000000a',
             '0x0000000000000000000000000000000000000000000000000000000000000010'
         ]
@@ -142,8 +142,8 @@ var tests = [{
         address: address,
         blockHash: '0x1234567890',
         blockNumber: '0x1',
-        data: '0x' + 
-            '0000000000000000000000000000000000000000000000000000000000000001' + 
+        data: '0x' +
+            '0000000000000000000000000000000000000000000000000000000000000001' +
             '0000000000000000000000000000000000000000000000000000000000000004',
         topics: [
             '0x000000000000000000000000000000000000000000000000000000000000000a',
@@ -172,7 +172,7 @@ describe('lib/vnt/event', function () {
         tests.forEach(function (test, index) {
             it('test no: ' + index, function () {
                 var vnt = new Vnt();
-                var event = new SolidityEvent(vnt, test.abi, address);
+                var event = new Event(vnt, test.abi, address);
 
                 var result = event.decode(test.data);
                 assert.deepEqual(result, test.expected);
@@ -180,4 +180,3 @@ describe('lib/vnt/event', function () {
         });
     });
 });
-

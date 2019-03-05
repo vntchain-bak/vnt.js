@@ -1,7 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var BigNumber = require('bignumber.js');
-var AllSolidityEvents = require('../lib/vnt/allevents');
+var AllEvents = require('../lib/vnt/allevents');
 var Vnt = require('../index');
 
 
@@ -136,7 +136,7 @@ describe('lib/vnt/allevents', function () {
         tests.forEach(function (test, index) {
             it('test no: ' + index, function () {
                 var vnt = new Vnt();
-                var allEvents = new AllSolidityEvents(vnt, test.abi, address);
+                var allEvents = new AllEvents(vnt, test.abi, address);
 
                 var result = allEvents.decode(test.data);
                 assert.deepEqual(result, test.expected);
@@ -144,4 +144,3 @@ describe('lib/vnt/allevents', function () {
         });
     });
 });
-

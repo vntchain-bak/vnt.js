@@ -1,11 +1,11 @@
 var chai = require('chai');
 var assert = chai.assert;
-var coder = require('../lib/solidity/coder');
+var coder = require('../lib/types/coder');
 var BigNumber = require('bignumber.js');
 var bn = BigNumber;
 
 
-describe('lib/solidity/coder', function () {
+describe('lib/types/coder', function () {
     describe('decodeParam', function () {
         var test = function (t) {
             it('should turn ' + t.value + ' to ' + t.expected, function () {
@@ -251,7 +251,7 @@ describe('lib/solidity/coder', function () {
     });
 });
 
-describe('lib/solidity/coder', function () {
+describe('lib/types/coder', function () {
     describe('decodeParams', function () {
         var test = function (t) {
             it('should turn ' + t.values + ' to ' + t.expected, function () {
