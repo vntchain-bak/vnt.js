@@ -5741,8 +5741,8 @@ var properties = function () {
             getter: 'core_coinbase'
         }),
         new Property({
-            name: 'mining',
-            getter: 'core_mining'
+            name: 'producing',
+            getter: 'core_producing'
         }),
         new Property({
             name: 'syncing',
@@ -6989,7 +6989,7 @@ var transfer = function (vnt, from, to, value, callback) {
  */
 var transferToAddress = function (vnt, from, to, value, callback) {
     return vnt.sendTransaction({
-        address: to,
+        to: to,
         from: from,
         value: value
     }, callback);
