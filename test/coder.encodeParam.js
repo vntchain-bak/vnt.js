@@ -1,9 +1,9 @@
 var chai = require('chai');
 var assert = chai.assert;
-var coder = require('../lib/solidity/coder');
+var coder = require('../lib/types/coder');
 
 
-describe('lib/solidity/coder', function () {
+describe('lib/types/coder', function () {
     describe('encodeParam', function () {
         var test = function (t) {
             it('should turn ' + t.value + ' to ' + t.expected, function () {
@@ -196,7 +196,7 @@ describe('lib/solidity/coder', function () {
 });
 
 
-describe('lib/solidity/coder', function () {
+describe('lib/types/coder', function () {
     describe('encodeParams', function () {
         var test = function (t) {
             it('should turn ' + t.values + ' to ' + t.expected, function () {

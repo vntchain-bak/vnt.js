@@ -9,86 +9,63 @@
     - [A note on big numbers in vnt.js](#a-note-on-big-numbers-in-vntjs)
   - [VNT.js API Reference](#vntjs-api-reference)
       - [vnt.version.api](#vntversionapi)
-        - [Returns](#returns)
-        - [Example](#example)
       - [vnt.version.node](#vntversionnode)
-        - [Returns](#returns-1)
-        - [Example](#example-1)
       - [vnt.version.network](#vntversionnetwork)
-        - [Returns](#returns-2)
-        - [Example](#example-2)
       - [vnt.version.vntchain](#vntversionvntchain)
-        - [Returns](#returns-3)
-        - [Example](#example-3)
       - [vnt.version.whisper](#vntversionwhisper)
-        - [Returns](#returns-4)
-        - [Example](#example-4)
       - [vnt.isConnected](#vntisconnected)
-        - [Parameters](#parameters)
-        - [Returns](#returns-5)
-        - [Example](#example-5)
       - [vnt.setProvider](#vntsetprovider)
-        - [Parameters](#parameters-1)
-        - [Returns](#returns-6)
-        - [Example](#example-6)
       - [vnt.currentProvider](#vntcurrentprovider)
-        - [Returns](#returns-7)
-        - [Example](#example-7)
       - [vnt.reset](#vntreset)
-        - [Parameters](#parameters-2)
+      - [vnt.sha3](#vntsha3)
       - [vnt.toHex](#vnttohex)
-        - [Parameters](#parameters-3)
+      - [vnt.toAscii](#vnttoascii)
       - [vnt.fromAscii](#vntfromascii)
-        - [Parameters](#parameters-4)
+      - [vnt.toDecimal](#vnttodecimal)
       - [vnt.fromDecimal](#vntfromdecimal)
-        - [Parameters](#parameters-5)
+      - [vnt.fromWei](#vnttowei)
       - [vnt.toWei](#vnttowei)
+      - [vnt.toBigNumber](#vnttobignumber)
       - [vnt.isAddress](#vntisaddress)
-        - [Parameters](#parameters-6)
+      - [vnt.net.listening](#vntnetlistening)
       - [vnt.net.peerCount](#vntnetpeercount)
-        - [Returns](#returns-8)
-        - [Example](#example-8)
     - [vnt.core](#vntcore)
-        - [Example](#example-9)
       - [vnt.core.defaultAccount](#vntcoredefaultaccount)
+      - [vnt.core.defaultBlock](#vntcoredefaultblock)
       - [vnt.core.syncing](#vntcoresyncing)
-        - [Returns](#returns-9)
+      - [vnt.core.isSyncing](#vntcoreissyncing)
       - [vnt.core.coinbase](#vntcorecoinbase)
-        - [Returns](#returns-10)
-        - [Example](#example-10)
-      - [vnt.core.mining](#vntcoremining)
-        - [Returns](#returns-11)
-        - [Example](#example-11)
+      - [vnt.core.producing](#vntcoreproducing)
       - [vnt.core.gasPrice](#vntcoregasprice)
-        - [Returns](#returns-13)
-        - [Example](#example-13)
       - [vnt.core.accounts](#vntcoreaccounts)
-        - [Returns](#returns-14)
-        - [Example](#example-14)
       - [vnt.core.blockNumber](#vntcoreblocknumber)
-        - [Returns](#returns-15)
-        - [Example](#example-15)
       - [vnt.core.getBalance](#vntcoregetbalance)
-        - [Parameters](#parameters-8)
+      - [vnt.core.getStorageAt](#vntcoregetstorageat)
       - [vnt.core.getCode](#vntcoregetcode)
-        - [Parameters](#parameters-9)
+      - [vnt.core.getBlock](#vntcoregetblock)
       - [vnt.core.getBlockTransactionCount](#vntcoregetblocktransactioncount)
-        - [Parameters](#parameters-10)
       - [vnt.core.getTransaction](#vntcoregettransaction)
-        - [Parameters](#parameters-11)
+      - [vnt.core.getTransactionFromBlock](#vntcoregettransactionfromblock)
+      - [vnt.core.getTransactionReceipt](#vntcoregettransactionreceipt)
       - [vnt.core.getTransactionCount](#vntcoregettransactioncount)
-        - [Parameters](#parameters-12)
+      - [vnt.core.sendTransaction](#vntcoresendtransaction)
       - [vnt.core.sendRawTransaction](#vntcoresendrawtransaction)
-        - [Parameters](#parameters-13)
+      - [vnt.core.sign](#vntcoresign)
       - [vnt.core.call](#vntcorecall)
-        - [Parameters](#parameters-14)
+      - [vnt.core.estimateGas](#vntcoreestimategas)
       - [vnt.core.filter](#vntcorefilter)
-        - [Parameters](#parameters-15)
-        - [Example](#example-16)
-      - [Contract Methods](#contract-methods)
-        - [Parameters](#parameters-16)
-        - [Parameters](#parameters-17)
-        - [Parameters](#parameters-18)
+      - [vnt.core.contract](#vntcorecontract)
+        - [Contract Methods](#contract-methods)
+        - [Contract Events](#contract-events)
+        - [Contract allEvents](#contract-allevents)
+        - [Contract codeFile](#contract-codefile)
+        - [Contract packContructorData](#contract-packcontructordata)
+        - [Contract packFunctionData](#contract-packfunctiondata)
+        - [Contract unPackOutput](#contract-unpackoutput)
+      - [Account decrypt](#account-decrypt)
+      - [Account encrypt](#account-encrypt)
+      - [vnt.core.namereg](#vntcorenamereg)
+      - [vnt.core.sendIBANTransaction](#vntcoresendibantransaction)
       - [vnt.core.iban.fromAddress](#vntcoreibanfromaddress)
       - [vnt.core.iban.fromBban](#vntcoreibanfrombban)
       - [vnt.core.iban.createIndirect](#vntcoreibancreateindirect)
@@ -222,7 +199,7 @@ var balance = new BigNumber('13124.234435346456466666457455567456');
     * [hashrate/getHashrate](#vntcorehashrate)
     * [gasPrice/getGasPrice](#vntcoregasprice)
     * [accounts/getAccounts](#vntcoreaccounts)
-    * [mining/getMining](#vntcoremining)
+    * [producing/getProducing](#vntcoreproducing)
     * [blockNumber/getBlockNumber](#vntcoreblocknumber)
     * [getBalance(address)](#vntcoregetbalance)
     * [getStorageAt(address, position)](#vntcoregetstorageat)
@@ -246,6 +223,12 @@ var balance = new BigNumber('13124.234435346456466666457455567456');
     * [contract.myMethod()](#contract-methods)
     * [contract.myEvent()](#contract-events)
     * [contract.allEvents()](#contract-allevents)
+    * [contract.codeFile()](#contract-codefile)
+    * [contract.packContructorData()](#contract-packcontructordata)
+    * [contract.packFunctionData()](#contract-packfunctiondata)
+    * [contract.unPackOutput()](#contract-unpackoutput)
+    <!-- * [account.decrypt](#account-decrypt)
+    * [account.encrypt](#account-encrypt) -->
     * [namereg](#vntcorenamereg)
     * [sendIBANTransaction](#vntcoresendibantransaction)
     * [iban](#vntcoreiban)
@@ -785,6 +768,10 @@ This default block is used for the following methods (optionally you can overrid
 - [vnt.core.call()](#vntcorecall)
 - [contract.myMethod.call()](#contract-methods)
 - [contract.myMethod.estimateGas()](#contract-methods)
+- [contract.codeFile()](#contract-codefile)
+- [contract.packContructorData()](#contract-packcontructordata)
+- [contract.packFunctionData()](#contract-packfunctiondata)
+- [contract.unPackOutput()](#contract-unpackoutput)
 
 ##### Values
 Default block parameters can be one of the following:
@@ -880,7 +867,7 @@ vnt.core.isSyncing(function(error, sync){
     vnt.core.coinbase
    // or async
    vnt.core.getCoinbase(callback(error, result){ ... })
-This property is read only and returns the coinbase address where the mining rewards go to.
+This property is read only and returns the coinbase address where the block rewards go to.
 
 ##### Returns
 `String` - The coinbase address of the client.
@@ -894,19 +881,19 @@ console.log(coinbase); // "0x407d73d8a49eeb85d32cf465507dd71d507100c1"
 
 ***
 
-#### vnt.core.mining
-    vnt.core.mining
+#### vnt.core.producing
+    vnt.core.produxing
    // or async
-   vnt.core.getMining(callback(error, result){ ... })
-This property is read only and says whether the node is mining or not.
+   vnt.core.getProducing(callback(error, result){ ... })
+This property is read only and says whether the node is producing blocks or not.
 
 ##### Returns
-`Boolean` - `true` if the client is mining, otherwise `false`.
+`Boolean` - `true` if the client is produsing, otherwise `false`.
 
 ##### Example
 ```js
-var mining = vnt.core.mining;
-console.log(mining); // true or false
+var producing = vnt.core.producing;
+console.log(producing); // true or false
 ```
 
 ***
@@ -1387,8 +1374,8 @@ vnt.core.filter(options, function(error, result){
 
 ##### Parameters
 1. `String|Object` - The string `"latest"` or `"pending"` to watch for changes in the latest block or pending transactions respectively. Or a filter options object as follows:
- * `fromBlock`: `Number|String` - The number of the earliest block (`latest` may be given to mean the most recent and `pending` currently mining, block). By default `latest`.
- * `toBlock`: `Number|String` - The number of the latest block (`latest` may be given to mean the most recent and `pending` currently mining, block). By default `latest`.
+ * `fromBlock`: `Number|String` - The number of the earliest block (`latest` may be given to mean the most recent and `pending` currently producing, block). By default `latest`.
+ * `toBlock`: `Number|String` - The number of the latest block (`latest` may be given to mean the most recent and `pending` currently producing, block). By default `latest`.
  * `address`: `String` - An address ~or a list of addresses~ to only get logs from particular account(s).
  * `topics`: `Array of Strings` - An array of values which must each appear in the log entries. The order is important, if you want to leave topics out use `null`, e.g. `[null, '0x00...']`. You can also pass another array for each topic with options for that topic e.g. `[null, ['option1', 'option2']]`
 
@@ -1457,21 +1444,17 @@ var myContractInstance = MyContract.at(myContractAddress);
 const fs = require("fs");
 let codeFile = "dir/of/wasm/code/file"
 let abiFile = "dir/of/abi"
-let code = fs.readFileSync(codeFile);
+
 let abi = fs.readFileSync(abiFile)
 
-var pack = {
-  Code: code.toString("base64"),
-  Abi: wasmabi.toString("base64")
-}
-var json = JSON.stringify(pack)
-var data = vnt.toHex(json)
+let MyContract = vnt.core.contract(JSON.parse(abi)).codeFile(codeFile);
 
+let data = MyContract.packContructorData(param1, param2);
 let gasEstimate = vnt.core.estimateGas({data: data});
-let MyContract = vnt.core.contract(JSON.parse(abi));
+
 var myContractReturned = MyContract.new(param1, param2, {
   from:mySenderAddress,
-  data:data,
+  data:MyContract.code,
   gas:gasEstimate}, function(err, myContract){
    if(!err) {
       // NOTE: The callback will fire twice!
@@ -1672,6 +1655,259 @@ events.stopWatching();
 
 ***
 
+#### Contract codeFile
+```js
+// initialize a contract instance with abi and
+// load the code file
+var contract = vnt.core.contract(abi).codeFile(codeFile)
+...
+```
+Load the contract code file into contract body.
+
+##### Parameters
+1. `string` - Code file path.
+
+##### Returns
+`Object` - The Contract instance.
+
+##### Example
+```js
+// initialize a contract instance with abi and
+// load the code file
+var contract = vnt.core.contract(abi).codeFile(codeFile)
+
+// make the constructor data for contract deployment
+var data = contract.packContructorData(1000000000, "bitcoin", "BTC")
+console.log("data: ", data)
+// get the nonce of the address
+var nonce = vnt.core.getTransactionCount(account1.address);
+
+// make a transaction
+var options = {
+   nonce: vnt.toHex(nonce),
+   gasPrice: vnt.toHex(30000000000000),
+   gasLimit: vnt.toHex(4000000),
+   value: '0x00',
+   data: data
+}
+
+var tx = new Tx(options);
+
+// sign the transaction
+tx.sign(new Buffer(account1.privateKey.substring(2,), "hex"));
+
+// serialize the transaction
+var serializedTx = tx.serialize();
+
+// send the transaction
+vnt.core.sendRawTransaction('0x' + serializedTx.toString('hex'),
+function(err, txHash) {
+  if (err) {
+      console.log("err happened: ", err)
+  } else {
+      console.log("transaction hash: ", txHash);
+  }
+});
+```
+
+***
+
+#### Contract packContructorData
+```js
+// initialize a contract instance with abi and
+// load the code file
+var contract = vnt.core.contract(abi).codeFile(codeFile)
+// make the constructor data for contract deployment
+var data = contract.packContructorData(1000000000, "bitcoin", "BTC")
+console.log(data)
+...
+```
+Make the constructor data for contract deployment.
+
+##### Parameters
+1. `Array` - The Constructor params list.
+
+##### Returns
+`string` - The hex string data.
+
+##### Example
+```js
+// initialize a contract instance with abi and
+// load the code file
+var contract = vnt.core.contract(abi).codeFile(codeFile)
+
+// make the constructor data for contract deployment
+var data = contract.packContructorData(1000000000, "bitcoin", "BTC")
+console.log("data: ", data)
+// get the nonce of the address
+var nonce = vnt.core.getTransactionCount(account1.address);
+
+// make a transaction
+var options = {
+   nonce: vnt.toHex(nonce),
+   gasPrice: vnt.toHex(30000000000000),
+   gasLimit: vnt.toHex(4000000),
+   value: '0x00',
+   data: data
+}
+
+var tx = new Tx(options);
+
+// sign the transaction
+tx.sign(new Buffer(account1.privateKey.substring(2,), "hex"));
+
+// serialize the transaction
+var serializedTx = tx.serialize();
+
+// send the transaction
+vnt.core.sendRawTransaction('0x' + serializedTx.toString('hex'),
+function(err, txHash) {
+  if (err) {
+      console.log("err happened: ", err)
+  } else {
+      console.log("transaction hash: ", txHash);
+  }
+});
+```
+
+
+***
+
+#### Contract packFunctionData
+```js
+// initialize a contract instance with abi
+var contract = vnt.core.contract(abi)
+// make the function data for a function call.
+var data = contract.packFunctionData("GetAmount", ["0x111"]);
+console.log(data)
+...
+```
+// make the function data for a function call.
+
+##### Parameters
+1. `String` - The function name.
+2. `Array` - The function params list.
+
+##### Returns
+`string` - The hex string data.
+
+##### Example
+```js
+// initialize a contract instance with abi
+var contract = vnt.core.contract(abi)
+
+var data = contract.packFunctionData("GetAmount", [address]);
+
+console.log("the data is: ", data)
+// 获取账户1的下一个nonce值
+var nonce = vnt.core.getTransactionCount(account1.address);
+
+// 生成交易的结构体，指定nonce, gasPirce, gasLimit, value, data等字段
+var options = {
+   to: contractAddr,
+   data: data
+}
+var result = vnt.core.call(options)
+console.log(contract.unPackOutput("GetAmount", result).toString())
+```
+
+***
+
+#### Contract unPackOutput
+```js
+// initialize a contract instance with abi
+var contract = vnt.core.contract(abi)
+// make the function data for a function call.
+var result = contract.unPackOutput("GetAmount", "0x0000101010101");
+console.log(data)
+...
+```
+// make the function data for a function call.
+
+##### Parameters
+1. `String` - The function name.
+2. `String` - The output hex string.
+
+##### Returns
+`Object` - The output.
+
+##### Example
+```js
+// initialize a contract instance with abi
+var contract = vnt.core.contract(abi)
+
+var data = contract.packFunctionData("GetAmount", [address]);
+
+console.log("the data is: ", data)
+// 获取账户1的下一个nonce值
+var nonce = vnt.core.getTransactionCount(account1.address);
+
+// 生成交易的结构体，指定nonce, gasPirce, gasLimit, value, data等字段
+var options = {
+   to: contractAddr,
+   data: data
+}
+var result = vnt.core.call(options)
+console.log(contract.unPackOutput("GetAmount", result).toString())
+```
+
+<!--
+#### Account decrypt
+```js
+// decrypt a keystore content with a password, into an account object
+var kfile = "dir/of/keystore/file"
+var content = fs.readFileSync(kfile).toString("utf-8")
+var password = "password"
+var account = vnt.account.decrypt(content, password, false)
+console.log(account.address)
+console.log(account.privateKey)
+
+```
+// decrypt a keystore file with a password, into an account object.
+
+##### Parameters
+1. `String` - The keystore file content.
+2. `String` - The password.
+3. `Boolean` - Whether it's a strict keyfile, default false
+
+##### Returns
+`Object` - The account object.
+
+##### Example
+```js
+// decrypt a keystore content with a password, into an account object
+var kfile = "dir/of/keystore/file"
+var content = fs.readFileSync(kfile).toString("utf-8")
+var password = "password"
+var account = vnt.account.decrypt(content, password, false)
+console.log(account.address)
+console.log(account.privateKey)
+```
+
+#### Account encrypt
+```js
+// decrypt a keystore content with a password, into an account object
+var privateKey = "privatekeytext";
+vnt.account.encrypt(privateKey, "somepassword", {})
+```
+// decrypt a keystore file with a password, into an account object.
+
+##### Parameters
+1. `String` - The private key.
+2. `String` - The password.
+3. `Object` - The options used for encryption
+
+##### Returns
+`String` - The keystore content.
+
+##### Example
+```js
+var privateKey = "privatekeytext";
+vnt.account.encrypt(privateKey, "somepassword", {})
+``` -->
+
+***
+
 #### vnt.core.namereg
     vnt.core.namereg
 Returns GlobalRegistrar object.
@@ -1729,7 +1965,7 @@ vnt.shh.post(message);
 
 #### vnt.core.sendIBANTransaction
 ```js
-var txHash = vnt.core.sendIBANTransaction('0x00c5496aee77c1ba1f0854206a26dda82a81d6d8', 'XE81ETHXREGGAVOFYORK', 0x100);
+var txHash = vnt.core.sendIBANTransaction('0x00c5496aee77c1ba1f0854206a26dda82a81d6d8', 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS', 0x100);
 ```
 Sends IBAN transaction from user account to destination IBAN address.
 

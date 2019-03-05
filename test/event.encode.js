@@ -1,6 +1,6 @@
 var chai = require('chai');
 var assert = chai.assert;
-var SolidityEvent = require('../lib/vnt/event');
+var Event = require('../lib/vnt/event');
 var Vnt = require('../index');
 
 
@@ -223,7 +223,7 @@ describe('lib/vnt/event', function () {
         tests.forEach(function (test, index) {
             it('test no: ' + index, function () {
                 var vnt = new Vnt();
-                var event = new SolidityEvent(vnt, test.abi, address);
+                var event = new Event(vnt, test.abi, address);
                 event.signature = function () { // inject signature
                     return signature.slice(2);
                 };
@@ -234,4 +234,3 @@ describe('lib/vnt/event', function () {
         });
     });
 });
-
