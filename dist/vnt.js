@@ -3287,8 +3287,7 @@ var ContractFactory = function (core, abi) {
             var constructorAbi = abi.filter(function (json) {
                 return json.type === 'constructor' && json.inputs.length === args.length;
             })[0] || {};
-
-            if (!constructorAbi.payable) {
+            if (constructorAbi.name.substring(0, 1) != '$') {
                 throw new Error('Cannot send value to non-payable constructor');
             }
         }
@@ -4414,7 +4413,9 @@ var Func = function (vnt, json, address) {
         return i.type;
     });
     this._constant = json.constant;
-    this._payable = json.payable;
+    if (json.name.substring(0, 1) == '$') {
+        this._payable = true;
+    }
     this._name = utils.transformToFullName(json);
     this._address = address;
 };
